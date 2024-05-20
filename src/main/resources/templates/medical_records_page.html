@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Records Page</title>
+    <link rel="icon" type="image/png" href="/images/2.png">
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .banner {
+            text-align: center;
+            position: relative;
+        }
+
+        .banner img {
+            width: 100%;
+            filter: blur(1px);
+        }
+
+        .banner-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .navbar-dark {
+            background-color: #0B8FAC;
+        }
+
+        .navbar-dark .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: bold;
+        }
+
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .navbar-brand {
+            margin-right: auto;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .footer {
+            background-color: #0B8FAC;
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .hoverable:hover {
+            transform: scale(1.1);
+        }
+
+        .banner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+            z-index: 1;
+            animation: heartbeat 6s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 0.9;
+            }
+            100% {
+                opacity: 0.8;
+            }
+        }
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="file"]:focus {
+            outline: none;
+            border-color: #343a40;
+            box-shadow: 0 0 20px #343a40;
+            transition: all 0.3s ease;
+        }
+
+        .registration-container {
+            position: relative;
+            background-image: url("/images/departments-3.jpg"); /* Replace 'your-background-image-url.jpg' with your actual image URL */
+            background-size: 100% auto;
+            background-position: center;
+        }
+
+        .registration-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9));
+            z-index: 1;
+        }
+
+        .registration-form {
+            position: relative;
+            z-index: 1;
+        }
+
+        .registration-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(5px); /* Apply blur effect only to the background image */
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        /* Hide the actual radio button */
+        .profile-icon-radio {
+            display: none;
+        }
+
+        /* Style the label to make the image look like a radio button */
+        .profile-icon-label {
+            cursor: pointer;
+            display: inline-block;
+            padding: 5px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+
+        /* Style the image inside the label */
+        .profile-icon {
+            width: 50px;
+            height: 50px;
+        }
+
+        /* Change border color on hover */
+        .profile-icon-label:hover {
+            border-color: #007bff;
+        }
+
+        /* Change border color when the radio button is checked */
+        .profile-icon-radio:checked + .profile-icon-label {
+            border-color: #007bff;
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+
+        /* Define shaking animation */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        /* Apply shaking animation when the radio button is checked */
+        .profile-icon-radio:checked + .profile-icon-label .profile-icon {
+            animation: shake 0.5s;
+            animation-iteration-count: 1;
+        }
+
+        .login-link {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .login-link:hover {
+            color: #f8f9fa; /* Lighter shade of white for hover effect */
+        }
+        @keyframes dance {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        #register-icon {
+            animation: dance 2s ease infinite;
+        }
+
+        body {
+            background: linear-gradient(45deg, #012633, #6dd5fa, #034B65, #6dd5fa, #2980b9);
+            background-size: 400% 400%;
+            animation: gradientChange 10s ease infinite;
+        }
+
+        @keyframes gradientChange {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .forgot-password-link {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password-link:hover {
+            color: #f8f9fa; /* Lighter shade of white for hover effect */
+        }
+
+        .register-link {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .register-link:hover {
+            color: #f8f9fa; /* Lighter shade of white for hover effect */
+        }
+    </style>
+</head>
+<body>
+<div class="overlay" id="overlay">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden"></span>
+    </div>
+</div>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a th:href="@{/index}" class="navbar-brand"><img class="logo" src="/images/2.png" alt="logo"/></a>
+        <h4 style="color: white; font-weight: bold; font-family: sans-serif; margin-left: 20px; margin-top: 20px;">Dashboard</h4>
+        <img src="/images/dashboard_icon.png" style="max-width: 40px; max-height: 40px; margin-left: 20px; margin-top: 8px;" alt="dashboard_icon"/>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto" th:if="${patient != null}">
+                <li class="nav-item dropdown">
+                    <div class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
+                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                        <img id="user-photo" th:src="'/icons/' + ${patient.patientPicture}" style="max-width: 50px; max-height: 50px;">
+                        <span class="name-surname" th:text="${patient.patientName+ ' ' + patient.patientSurname}">John Doe</span>
+                    </div>
+                    <!-- Dropdown Menu -->
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a style="color: white;" class="dropdown-item" th:href="@{/delete/account}">Delete Account</a>
+                        <div class="dropdown-divider"></div>
+                        <a style="color: white;" class="dropdown-item" th:href="@{/logout}">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</nav>
+
+<div class="container registration-container" style="padding: 180px;">
+    <div class="row justify-content-center" style="color: white;">
+        <div class="col-md-10 text-center">
+            <img src="/images/medical-record.png" style="width: 100px; height: 100px;">
+            <h1>Medical Records Available</h1>
+
+            <!-- Date filter description -->
+            <p class="lead">Filter medical records by date:</p>
+
+            <!-- Date filter form -->
+            <form th:action="@{/view/medical/records}" method="get" class="mb-3">
+                <div class="form-row align-items-center justify-content-center">
+                    <div class="col-auto">
+                        <label for="startDate" class="sr-only">Start Date</label>
+                        <input type="date" id="startDate" name="startDate" class="form-control" placeholder="Start Date">
+                    </div>
+                    <div class="col-auto">
+                        <label for="endDate" class="sr-only">End Date</label>
+                        <input type="date" id="endDate" name="endDate" class="form-control" placeholder="End Date">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="list-group">
+                <!-- Loop through each medical record -->
+                <div th:each="medicalRecord : ${medicalRecords}" class="list-group-item" style="background-color: #666f78;">
+                    <div class="card" style="background-color: #343a40;">
+                        <div class="card-body">
+                            <!-- Display record ID, treatment status, and date -->
+                            <h5 class="card-title" th:text="'Record ID: ' + ${medicalRecord.recordId}"></h5>
+                            <p th:text="'Treatment Status: ' + ${medicalRecord.treatmentStatus}"></p>
+                            <p th:text="'Record Date: ' + ${#dates.format(medicalRecord.booking.bookingDate, 'yyyy-MM-dd')}"></p>
+                            <!-- Thymeleaf link to download the medical record PDF -->
+                            <a th:href="@{'/medical/record/' + ${medicalRecord.recordId} + '/download'}" class="btn btn-primary">Download</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <p>Contact Us:</p>
+                <p>Email: <a href="mailto:medxpert-hms@outlook.com" class="hoverable">medxpert-hms@outlook.com</a></p>
+                <p>Phone: +27 (65) 510-9157</p>
+            </div>
+            <div class="col-lg-6">
+                <p>Follow Us or Chat With Us:</p>
+                <a href="https://wa.me/+27655109157" class="hoverable"><img src="/images/whatsapp_icon.png" style="width: 50px; height: 50px" alt="whatsapp"></a>
+                <a href="https://web.facebook.com/koketso.prince.65510" class="hoverable"><img src="/images/facebook_icon.png" style="width: 50px; height: 50px" alt="facebook"></a>
+                <a href="https://www.instagram.com/koketsomokgoko_ult/?hl=en" class="hoverable"><img src="/images/instagram_icon.png" style="width: 50px; height: 50px" alt="Instagram"></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script>
+    window.addEventListener('load', function() {
+        var overlay = document.getElementById('overlay');
+        overlay.style.display = 'none';
+    });
+</script>
+</body>
+</html>
