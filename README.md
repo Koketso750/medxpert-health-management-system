@@ -41,10 +41,6 @@ The application is deployed on AWS Elastic Beanstalk for production use. To depl
 
 Contributions to Medxpert are welcome! If you have suggestions for new features, improvements, or bug fixes, please open an issue or submit a pull request on GitHub.
 
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
 ## Support
 
 For any questions or support inquiries, please contact the project maintainers.
