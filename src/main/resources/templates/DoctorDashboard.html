@@ -276,6 +276,32 @@
         .register-link:hover {
             color: #f8f9fa; /* Lighter shade of white for hover effect */
         }
+        .dropdown-item:hover {
+            background-color: #2980b9;
+            color: white; /* Optional: Change text color on hover */
+        }
+        .search-form {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .search-form .form-row {
+            justify-content: center;
+        }
+
+        .search-form .col-auto {
+            margin-bottom: 10px;
+        }
+
+        .search-form input[type="text"] {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .search-form button[type="submit"] {
+            width: 100%;
+            max-width: 150px;
+        }
     </style>
 </head>
 <body>
@@ -303,7 +329,7 @@
                     </div>
                     <!-- Dropdown Menu -->
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a style="color: white;" class="dropdown-item" th:href="@{/doctor/logout}">Logout</a>
+                        <a style="color: black;" class="dropdown-item" th:href="@{/doctor/logout}">Logout</a>
                     </div>
                 </li>
             </ul>
@@ -317,6 +343,18 @@
         <div class="col-md-10 text-center">
             <img src="/images/medical-record.png" style="width: 100px; height: 100px;">
             <h1>Medical Records Available</h1>
+            <!-- Search form -->
+            <form th:action="@{/Doctor/Dashboard/Page}" method="get" class="search-form">
+                <div class="form-row align-items-center">
+                    <div class="col-auto">
+                        <label for="recordId" class="sr-only">Search by Record ID</label>
+                        <input type="text" id="recordId" name="recordId" class="form-control" placeholder="Search by Record ID">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </form>
             <div th:if="${message}" th:classappend="${message == 'Treatment Successful!' ? 'alert alert-success' : 'alert alert-danger'}" style="text-align: center; width: 100%;">
                 <p th:text="${message}"></p>
             </div>
@@ -380,6 +418,8 @@
     </div>
 </footer>
 
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 <script>
     window.addEventListener('load', function() {

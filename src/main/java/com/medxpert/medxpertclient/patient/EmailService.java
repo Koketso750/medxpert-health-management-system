@@ -21,7 +21,7 @@ public class EmailService {
     private String sendGridApiKey;
 
     public void sendEmail(String to, String subject, String text) throws IOException {
-        Email from = new Email("readwell-library@outlook.com");
+        Email from = new Email("medxpert-hms@outlook.com");
         Email toEmail = new Email(to);
         Content content = new Content("text/plain", text);
         Mail mail = new Mail(from, subject, toEmail, content);
@@ -40,28 +40,16 @@ public class EmailService {
     }
 
     public void sendEmailWithLogo(String to, String subject, String htmlContent) throws IOException, URISyntaxException {
-        Email from = new Email("readwell-library@outlook.com");
+        Email from = new Email("medxpert-hms@outlook.com");
         Email toEmail = new Email(to);
-        Content content = new Content("text/html", htmlContent);  // Changed content type to "text/html"
+        Content content = new Content("text/html", htmlContent);
         Mail mail = new Mail(from, subject, toEmail, content);
 
-        // Get the path to the logo image in the static folder
-        String logoPath = "/static/images/2.png";
-
-        // Read the logo image file
-        byte[] logoBytes = Files.readAllBytes(Paths.get(getClass().getResource(logoPath).toURI()));
-
-        // Encode the logo image bytes to base64
-        String logoBase64 = Base64.getEncoder().encodeToString(logoBytes);
-
-        // Attach the logo image
-        Attachments attachments = new Attachments();
-        attachments.setFilename("logo1.png");
-        attachments.setType("image/png");
-        attachments.setDisposition("inline");
-        attachments.setContentId("logo");
-        attachments.setContent(logoBase64);
-        mail.addAttachments(attachments);
+        // Inline attachments for logo and social media icons
+        addInlineAttachment(mail, "/static/images/2.png", "logo", "image/png");
+        addInlineAttachment(mail, "/static/images/whatsapp_icon.png", "whatsapp_icon", "image/png");
+        addInlineAttachment(mail, "/static/images/facebook_icon.png", "facebook_icon", "image/png");
+        addInlineAttachment(mail, "/static/images/instagram_icon.png", "instagram_icon", "image/png");
 
         SendGrid sg = new SendGrid(sendGridApiKey);
         Request request = new Request();
@@ -74,5 +62,18 @@ public class EmailService {
         } catch (IOException ex) {
             throw ex;
         }
+    }
+
+    private void addInlineAttachment(Mail mail, String filePath, String contentId, String mimeType) throws IOException, URISyntaxException {
+        byte[] fileBytes = Files.readAllBytes(Paths.get(getClass().getResource(filePath).toURI()));
+        String base64File = Base64.getEncoder().encodeToString(fileBytes);
+
+        Attachments attachments = new Attachments();
+        attachments.setFilename(filePath.substring(filePath.lastIndexOf("/") + 1));
+        attachments.setType(mimeType);
+        attachments.setDisposition("inline");
+        attachments.setContentId(contentId);
+        attachments.setContent(base64File);
+        mail.addAttachments(attachments);
     }
 }

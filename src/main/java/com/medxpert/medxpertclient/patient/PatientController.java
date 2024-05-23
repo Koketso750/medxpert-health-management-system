@@ -55,6 +55,11 @@ public class PatientController {
     @Autowired
     private DoctorService doctorService;
 
+    @GetMapping("/chat")
+    public String goToChat(){
+        return "chat";
+    }
+
     @GetMapping("/index")
     public String index() {
         return "index";
@@ -125,16 +130,26 @@ public class PatientController {
         // Save the user to the database
         patientRepository.save(patient);
 
-        // Compose the email content
+        // Compose the welcome email content
         String subject = "Welcome to Medxpert Health Management System";
         String message = "<p>Dear " + name + ",</p>"
                 + "<p>Welcome to Medxpert Health Management System!</p>"
                 + "<p>Thank you for creating an account with us. Medxpert allows you to discover amazing health services and book medical appointments with ease.</p>"
                 + "<p>Start managing your health journey today and experience the convenience of our platform.</p>"
-                + "<p>Best regards,<br>The Medxpert Team</p>";
+                + "<p>Best regards,<br>The Medxpert Team</p>"
+                + "<footer>"
+                + "<img src=\"cid:logo\" style=\"width: 100px; height: auto;\" alt=\"MedXpert Logo\">"
+                + "<div class=\"col-lg-6\">"
+                + "<p>Follow Us or Chat With Us:</p>"
+                + "<a href=\"https://wa.me/+27655109157\" class=\"hoverable\"><img src=\"cid:whatsapp_icon\" style=\"width: 50px; height: 50px\" alt=\"whatsapp\"></a>"
+                + "<a href=\"https://web.facebook.com/koketso.prince.65510\" class=\"hoverable\"><img src=\"cid:facebook_icon\" style=\"width: 50px; height: 50px\" alt=\"facebook\"></a>"
+                + "<a href=\"https://www.instagram.com/koketsomokgoko_ult/?hl=en\" class=\"hoverable\"><img src=\"cid:instagram_icon\" style=\"width: 50px; height: 50px\" alt=\"Instagram\"></a>"
+                + "</div>"
+                + "</footer>";
 
-        // Send the email
+        // Send the email with inline images
         emailService.sendEmailWithLogo(email, subject, message);
+
 
         // Add a flash attribute to display a success message on the login page
         redirectAttributes.addFlashAttribute("message", "Successfully Registered! An email has been sent to your registered email address with further instructions.");
@@ -219,7 +234,6 @@ public class PatientController {
 
         medicalRecordRepository.save(medicalRecord);
 
-        // Send confirmation email to the patient
         String subject = "Booking Confirmation";
         String message = "<p>Dear " + patient.getPatientName() + ",</p>"
                 + "<p>Your booking has been confirmed successfully.</p>"
@@ -228,9 +242,19 @@ public class PatientController {
                 + "<p>Booking Type: " + bookingType + "</p>"
                 + "<p>Booking Date: " + sdf.format(bookingDate) + "</p>"
                 + "<p>Booking Facility: " + bookingFacility + "</p>"
-                + "<p>Doctor: " + doctor.getDocNames() + "</p>"
+                + "<p>Doctor: " + doctor.getDocNames() + " " + doctor.getDocSurname() + "</p>"
                 + "<p>Thank you for choosing Medxpert Health Management System.</p>"
-                + "<p>Best regards,<br>The Medxpert Team</p>";
+                + "<p>Best regards,<br>The Medxpert Team</p>"
+                + "<footer>"
+                + "<img src=\"cid:logo\" style=\"width: 100px; height: auto;\" alt=\"MedXpert Logo\">"
+                + "<div class=\"col-lg-6\">"
+                + "<p>Follow Us or Chat With Us:</p>"
+                + "<a href=\"https://wa.me/+27655109157\" class=\"hoverable\"><img src=\"cid:whatsapp_icon\" style=\"width: 50px; height: 50px\" alt=\"whatsapp\"></a>"
+                + "<a href=\"https://web.facebook.com/koketso.prince.65510\" class=\"hoverable\"><img src=\"cid:facebook_icon\" style=\"width: 50px; height: 50px\" alt=\"facebook\"></a>"
+                + "<a href=\"https://www.instagram.com/koketsomokgoko_ult/?hl=en\" class=\"hoverable\"><img src=\"cid:instagram_icon\" style=\"width: 50px; height: 50px\" alt=\"Instagram\"></a>"
+                + "</div>"
+                + "</footer>";
+
 
         emailService.sendEmailWithLogo(patient.getPatientEmail(), subject, message);
 
@@ -321,6 +345,9 @@ public class PatientController {
         Patient patient = (Patient) session.getAttribute("patient");
         if (patient != null) {
             try {
+                // Send confirmation email
+                sendAccountDeletionConfirmationEmail(patient.getPatientEmail());
+
                 // Delete patient from database
                 patientRepository.deleteById(patient.getPatientId());
 
@@ -335,5 +362,37 @@ public class PatientController {
         }
         return "redirect:/login";
     }
+
+    private void sendAccountDeletionConfirmationEmail(String to) {
+        String subject = "Confirmation of Account Deletion";
+        String message = "<html>"
+                + "<body>"
+                + "<div style=\"font-family: Arial, sans-serif;\">"
+                + "<p>Dear User,</p>"
+                + "<p>We regret to inform you that your account has been deleted from Medxpert Health Management System.</p>"
+                + "<p>We are sorry to see you leave and hope to see you again in the future.</p>"
+                + "<p>If you have any feedback or questions, feel free to contact us.</p>"
+                + "<p>Best regards,<br>The Medxpert Team</p>"
+                + "</div>"
+                + "<div style=\"position: fixed; bottom: 0; width: 100%; background-color: #f8f9fa; padding: 10px 20px;\">"
+                + "<img src=\"cid:logo\" style=\"width: 100px; height: auto;\" alt=\"MedXpert Logo\">"
+                + "<div style=\"display: inline-block;\">"
+                + "<p style=\"margin-bottom: 0;\">Follow Us or Chat With Us:</p>"
+                + "<a href=\"https://wa.me/+27655109157\" class=\"hoverable\"><img src=\"cid:whatsapp_icon\" style=\"width: 30px; height: 30px; margin-right: 10px;\" alt=\"whatsapp\"></a>"
+                + "<a href=\"https://web.facebook.com/koketso.prince.65510\" class=\"hoverable\"><img src=\"cid:facebook_icon\" style=\"width: 30px; height: 30px; margin-right: 10px;\" alt=\"facebook\"></a>"
+                + "<a href=\"https://www.instagram.com/koketsomokgoko_ult/?hl=en\" class=\"hoverable\"><img src=\"cid:instagram_icon\" style=\"width: 30px; height: 30px;\" alt=\"Instagram\"></a>"
+                + "</div>"
+                + "</div>"
+                + "</body>"
+                + "</html>";
+
+        try {
+            emailService.sendEmailWithLogo(to, subject, message);
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace(); // Log or handle the exception as needed
+        }
+    }
+
+
 }
 

@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +46,7 @@ public class DoctorController {
     @GetMapping("/Doctor/Dashboard/Page")
     public String doctorDashboardPage(@RequestParam(name = "startDate", required = false) LocalDate startDate,
                                       @RequestParam(name = "endDate", required = false) LocalDate endDate,
+                                      @RequestParam(name = "recordId", required = false) Integer recordId,
                                       HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
         HttpSession session = request.getSession();
         Doctor doctor = (Doctor) session.getAttribute("doctor");
@@ -55,13 +57,24 @@ public class DoctorController {
         }
 
         List<MedicalRecord> medicalRecords;
+        String pendingTreatmentStatus = "Pending Treatment";
 
-        if (startDate != null && endDate != null) {
+        if (recordId != null) {
+            // Search by Record ID
+            MedicalRecord medicalRecord = medicalRecordRepository.findById(recordId).orElse(null);
+            if (medicalRecord != null) {
+                medicalRecords = Collections.singletonList(medicalRecord);
+            } else {
+                medicalRecords = Collections.emptyList();
+                model.addAttribute("message", "No medical record found for ID: " + recordId);
+            }
+        } else if (startDate != null && endDate != null) {
             LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.MIN);
             LocalDateTime endDateTime = LocalDateTime.of(endDate, LocalTime.MAX);
-            medicalRecords = medicalRecordRepository.findByDoctorAndBookingBookingDateBetween(doctor, Timestamp.valueOf(startDateTime), Timestamp.valueOf(endDateTime));
+            medicalRecords = medicalRecordRepository.findByDoctorAndTreatmentStatusAndBookingBookingDateBetween(
+                    doctor, pendingTreatmentStatus, Timestamp.valueOf(startDateTime), Timestamp.valueOf(endDateTime));
         } else {
-            medicalRecords = medicalRecordRepository.findByDoctor(doctor);
+            medicalRecords = medicalRecordRepository.findByDoctorAndTreatmentStatus(doctor, pendingTreatmentStatus);
         }
 
         model.addAttribute("doctor", doctor);
@@ -69,6 +82,9 @@ public class DoctorController {
 
         return "DoctorDashboard";
     }
+
+
+
 
     @PostMapping("/Doctor/Dashboard/Page")
     public String handleDoctorLogin(@RequestParam("username") String username,
@@ -107,14 +123,25 @@ public class DoctorController {
                 MedicalRecord medicalRecord = optionalMedicalRecord.get();
                 Patient patient = medicalRecord.getPatient();
 
-                // Send email notification to the patient
+                // Compose the treatment update email content
                 String subject = "Treatment Update";
                 String message = "<p>Dear " + patient.getPatientName() + ",</p>"
                         + "<p>We are pleased to inform you that your treatment has been successfully completed.</p>"
                         + "<p>Please contact us if you have any questions or concerns.</p>"
-                        + "<p>Best regards,<br>The Medxpert Team</p>";
+                        + "<p>Best regards,<br>The Medxpert Team</p>"
+                        + "<footer>"
+                        + "<img src=\"cid:logo\" style=\"width: 100px; height: auto;\" alt=\"MedXpert Logo\">"
+                        + "<div class=\"col-lg-6\">"
+                        + "<p>Follow Us or Chat With Us:</p>"
+                        + "<a href=\"https://wa.me/+27655109157\" class=\"hoverable\"><img src=\"cid:whatsapp_icon\" style=\"width: 50px; height: 50px\" alt=\"whatsapp\"></a>"
+                        + "<a href=\"https://web.facebook.com/koketso.prince.65510\" class=\"hoverable\"><img src=\"cid:facebook_icon\" style=\"width: 50px; height: 50px\" alt=\"facebook\"></a>"
+                        + "<a href=\"https://www.instagram.com/koketsomokgoko_ult/?hl=en\" class=\"hoverable\"><img src=\"cid:instagram_icon\" style=\"width: 50px; height: 50px\" alt=\"Instagram\"></a>"
+                        + "</div>"
+                        + "</footer>";
 
+                // Send the email with inline images
                 emailService.sendEmailWithLogo(patient.getPatientEmail(), subject, message);
+
             }
 
             redirectAttributes.addFlashAttribute("message", "Treatment Successful!");

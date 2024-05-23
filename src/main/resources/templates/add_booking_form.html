@@ -276,6 +276,10 @@
     .register-link:hover {
       color: #f8f9fa; /* Lighter shade of white for hover effect */
     }
+    .dropdown-item:hover {
+      background-color: #2980b9;
+      color: white; /* Optional: Change text color on hover */
+    }
   </style>
 </head>
 <body>
@@ -304,9 +308,9 @@
           </div>
           <!-- Dropdown Menu -->
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a style="color: white;" class="dropdown-item" th:href="@{/delete/account}">Delete Account</a>
+            <a style="color: black;" class="dropdown-item" th:href="@{/delete/account}">Delete Account</a>
             <div class="dropdown-divider"></div>
-            <a style="color: white;" class="dropdown-item" th:href="@{/logout}">Logout</a>
+            <a style="color: black;" class="dropdown-item" th:href="@{/logout}">Logout</a>
           </div>
         </li>
       </ul>
@@ -394,6 +398,8 @@
   </div>
 </footer>
 
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 <script>
   window.addEventListener('load', function() {
