@@ -1,75 +1,50 @@
-# ReadWell - Your Personal Library
+# Medxpert Health Management System
 
-ReadWell is a Spring Boot application that allows users to create their own personal library where they can upload and manage their books privately, or share them with the public.
+Welcome to Medxpert! This is a Spring Boot application designed to streamline health management processes, allowing users to discover healthcare services and book medical appointments effortlessly. The application utilizes SendGrid for email notifications and MySQL for data storage. Additionally, it is deployed on AWS Elastic Beanstalk for scalability and reliability.
 
 ## Features
 
-- **User Authentication**: Users can sign up, log in, and manage their accounts securely.
-- **Book Management**: Users can upload, view, edit, and delete books from their personal library.
-- **Privacy Settings**: Users can choose to keep their library private or share it with the public.
-- **SendGrid Integration**: The application uses SendGrid for email services, allowing users to receive notifications and updates.
-- **MariaDB Database**: MariaDB is used as the database to store user information, book details, and other application data.
+- **Service Discovery**: Easily discover healthcare services available in your area.
+- **Appointment Booking**: Seamlessly book medical appointments with your preferred healthcare providers.
+- **Email Notifications**: Receive email notifications for appointment confirmations, reminders, and updates.
+- **Secure Data Storage**: All user and appointment data is securely stored in a MySQL database.
+- **Scalability**: Deployed on AWS Elastic Beanstalk, ensuring scalability to handle varying levels of user traffic.
 
-## Installation
+## Technologies Used
 
-1. Clone the repository:
+- **Spring Boot**: A powerful framework for building Java-based applications.
+- **SendGrid**: An email delivery service for sending transactional and marketing emails.
+- **MySQL**: A popular relational database management system for storing application data.
+- **AWS Elastic Beanstalk**: A cloud deployment service for deploying and managing applications.
 
-git clone https://github.com/your-username/readwell.git
+## Getting Started
 
+To run the application locally, follow these steps:
 
-2. Navigate to the project directory:
+1. Clone the repository from GitHub.
+2. Set up a MySQL database and configure the connection details in the application properties.
+3. Obtain a SendGrid API key and configure it in the application properties for sending emails.
+4. Build the application using Maven or your preferred build tool.
+5. Run the application locally using `java -jar`.
 
-cd readwell
+## Deployment
 
+The application is deployed on AWS Elastic Beanstalk for production use. To deploy the application:
 
-3. Configure SendGrid API Key:
+1. Package the application into a deployable artifact (e.g., WAR or JAR file).
+2. Create an Elastic Beanstalk environment for the application.
+3. Upload and deploy the artifact to the Elastic Beanstalk environment.
+4. Configure environment variables for database connection details and SendGrid API key.
+5. Monitor the application's performance and scale the environment as needed.
 
-   - Sign up for a SendGrid account if you haven't already: [SendGrid](https://sendgrid.com/)
-   - Obtain your SendGrid API Key.
-   - Set the API Key as an environment variable in your operating system or update the `application.properties` file with your API Key:
+## Contributing
 
-   ```properties
-   spring.sendgrid.api-key=YOUR_SENDGRID_API_KEY
+Contributions to Medxpert are welcome! If you have suggestions for new features, improvements, or bug fixes, please open an issue or submit a pull request on GitHub.
 
-4. Configure MariaDB:
+## License
 
-Install and configure MariaDB on your local machine or server.
-Create a new database for the application.
-Update the application.properties file with your MariaDB database configuration:
-properties
+This project is licensed under the [MIT License](LICENSE).
 
-spring.datasource.url=jdbc:mariadb://localhost:3306/your_database_name
-spring.datasource.username=your_username
-spring.datasource.password=your_password
+## Support
 
-
-5. Build the project using Maven:
-
-mvn clean install
-
-6. Run the application:
-
-mvn spring-boot:run
-
-The application will start running at http://localhost:8080.
-
-Usage
-Access the application in your web browser at http://localhost:8080.
-Sign up for a new account or log in if you already have one.
-Start managing your personal library by uploading, viewing, editing, and deleting books.
-Adjust privacy settings as desired to share your library with the public or keep it private.
-Contributing
-Contributions are welcome! Please follow the contribution guidelines when making changes to the project.
-
-License
-This project is licensed under the MIT License.
-
-Acknowledgements
-Spring Boot
-SendGrid
-MariaDB
-
-
-
-Feel free to adjust the instructions and details according to your project's specifics!
-
+For any questions or support inquiries, please contact the project maintainers.
